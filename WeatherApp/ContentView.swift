@@ -4,17 +4,26 @@
 //
 //  Created by VT on 14.11.2022.
 //
+//MARK : 1. Create model for data with 5 days forecast via wheater API
+//MARK : 2. Create field for imput city
+//MARK : 3. Create additional 5 views for different cities and buttons - load data
+//MARK : 4. Chande day mode button should update forecast from day to night
+//MARK : 5. Add animation for wheather
+
+
 
 import SwiftUI
 
 struct ContentView: View {
+    
+    @State private var isNight = false
+    
     var body: some View {
         ZStack {
-            BackgroundView(topColor: .blue,
-                           bottomColor: .yellow)
+            BackgroundView(isNight: $isNight)
             VStack {
                 CityTextView(cityName: "Kiev, UA")
-                MainWeatherStatusView(imageName: "cloud.sun.fill", temperature: 76)
+                MainWeatherStatusView(imageName: isNight ? "moon.stars.fill": "cloud.sun.fill", temperature: 76)
 
                 HStack(spacing: 20) {
                     WeatherDayView(dayofWeek: "TUE",
@@ -37,7 +46,7 @@ struct ContentView: View {
                 Spacer()
                 
                 Button {
-                    print("tapped")
+                    isNight.toggle()
                 } label: {
                     Text("Cnahge day mode")
                         .frame(width: 280, height: 50)
@@ -85,11 +94,11 @@ struct WeatherDayView: View {
 }
 
 struct BackgroundView: View {
-    var topColor: Color
-    var bottomColor: Color
+    
+    @Binding var isNight: Bool
     
     var body: some View {
-        LinearGradient(gradient: Gradient(colors: [topColor, bottomColor]),
+        LinearGradient(gradient: Gradient(colors: [isNight ? .black : .blue, isNight ? .gray : .yellow]),
                        startPoint: .topLeading,
                        endPoint: .bottomLeading )
         .edgesIgnoringSafeArea(.all)
@@ -126,23 +135,5 @@ struct MainWeatherStatusView: View {
                 .foregroundColor(.white)
         }
         .padding(.bottom, 40)
-    }
-}
-
-struct WeatherButton:View {
-    
-    var title: String
-    var textColor: Color
-    var backgroundColor: Color
-    
-    var body: some View {
-        Text(title)
-            .frame(width: 280, height: 50)
-            .background(backgroundColor)
-            .foregroundColor(textColor)
-            .font(.system(size: 20,
-                          weight: .bold,
-                          design: .default))
-            .cornerRadius(10)
     }
 }
